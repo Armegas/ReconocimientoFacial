@@ -1,0 +1,29 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment Variables
+.env
+
+# PyInstaller
+*.spec
+build/
+dist/
+
+# Logs
+*.log
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
