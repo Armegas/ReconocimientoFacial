@@ -80,16 +80,20 @@ def gen_frames():
                     try:
                         # Predecir
                         # confidence es distancia, menor es mejor. 0 = coincidencia perfecta.
-                        # < 100 es usualmente una coincidencia.
+                        # < 100 es usualmente una coincidencia, pero reducimos a 60 para mayor precision.
+                        
+                        # Apply histogram equalization to match training data
+                        roi_gray = cv2.equalizeHist(roi_gray)
+                        
                         label_id, confidence = face_recognizer.predict(roi_gray)
                         
-                        if confidence < 100:
+                        if confidence < 60:
                             name = names_dict.get(label_id, "Desconocido")
                             d_id = display_ids_dict.get(label_id, "")
-                            label_text = f"{name} ({d_id})"
+                            label_text = f"{name} ({d_id}) {confidence:.1f}"
                             color = (0, 255, 0) # Verde para coincidencia
                         else:
-                            label_text = "Desconocido"
+                            label_text = f"Desconocido ({confidence:.1f})"
                     except Exception as e:
                         print(f"Error de predicción: {e}")
 
@@ -114,4 +118,4 @@ def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=5000)

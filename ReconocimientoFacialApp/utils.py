@@ -2,6 +2,45 @@ import cv2
 import os
 import numpy as np
 
+
+def augment_image(image):
+    """
+    Generates augmented versions of the image:
+    - Original (Equalized)
+    - Flipped Horizontally
+    - Rotated +/- 10 degrees
+    - Brightness adjustments
+    """
+    augmented_images = []
+    
+    # 1. Histogram Equalization (Base for all)
+    img_eq = cv2.equalizeHist(image)
+    augmented_images.append(img_eq)
+    
+    # 2. Horizontal Flip
+    img_flip = cv2.flip(img_eq, 1)
+    augmented_images.append(img_flip)
+    
+    # 3. Rotations
+    rows, cols = img_eq.shape
+    for angle in [10, -10]:
+        M = cv2.getRotationMatrix2D((cols/2, rows/2), angle, 1)
+        img_rot = cv2.warpAffine(img_eq, M, (cols, rows))
+        augmented_images.append(img_rot)
+        
+    # 4. Brightness
+    # Increase brightness
+    img_bright = cv2.add(img_eq, np.array([30.0])) # Adding constant scalar 
+    augmented_images.append(img_bright)
+    
+    # Decrease brightness (using subtract to avoid wrap-around issues with simple add if not careful, but cv2.add handles saturation)
+    # Actually cv2.add with scalar adds to all channels. For grayscale, it works.
+    # To darken, we can subtract.
+    img_dark = cv2.subtract(img_eq, np.array([30.0]))
+    augmented_images.append(img_dark)
+
+    return augmented_images
+
 def train_model(uploads_dir):
     """
     Trains an LBPH Face Recognizer using images in the uploads directory.
@@ -62,9 +101,16 @@ def train_model(uploads_dir):
                 faces_detected = detector.detectMultiScale(img, scaleFactor=1.1, minNeighbors=5)
 
                 for (x, y, w, h) in faces_detected:
-                    faces.append(img[y:y+h, x:x+w])
-                    ids.append(internal_id)
-                    count_images += 1
+                    face_roi = img[y:y+h, x:x+w]
+                    
+                    # Augment data
+                    augmented_faces = augment_image(face_roi)
+                    
+                    for aug_face in augmented_faces:
+                        faces.append(aug_face)
+                        ids.append(internal_id)
+                        count_images += 1
+                        
             except Exception as e:
                 print(f"Error processing {filename}: {e}")
 

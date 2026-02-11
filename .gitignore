@@ -27,3 +27,6 @@ dist/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# Project Specific
+ReconocimientoFacialApp/static/uploads/
