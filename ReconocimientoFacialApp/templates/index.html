@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Reconocimiento Facial</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        img {
+            border: 5px solid #ddd;
+            border-radius: 4px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .nav {
+            margin-top: 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #007bff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Reconocimiento Facial en Vivo</h1>
+        <p>El sistema está activo y reconociendo rostros...</p>
+
+        <div>
+            <img src="{{ url_for('video_feed') }}" alt="Transmisión de Video">
+        </div>
+
+        <div class="nav">
+            <a href="{{ url_for('upload_file') }}">Registrar Nueva Persona</a>
+        </div>
+    </div>
+</body>
+
+</html>
